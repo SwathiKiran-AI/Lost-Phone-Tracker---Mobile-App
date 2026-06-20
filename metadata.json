@@ -1,0 +1,8 @@
+{
+  "name": "Lost Phone Recovery Tracker",
+  "description": "Anti-theft lost phone recovery application simulation featuring simulated live tracking, MDM uninstall protection, offline SMS command fallback, and dual-phone cross-platform verification.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
