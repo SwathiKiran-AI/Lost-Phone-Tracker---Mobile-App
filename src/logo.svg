@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Deep Dark Blue Radial Backing -->
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e1b4b" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#090d16" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#be123c"/>
+      <stop offset="50%" stop-color="#9f1239"/>
+      <stop offset="100%" stop-color="#4c0519"/>
+    </linearGradient>
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="50%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="needleSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <linearGradient id="needleRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#0b0f19" rx="32"/>
+  <circle cx="256" cy="256" r="220" fill="url(#bgGlow)"/>
+
+  <!-- Radar Grid Circles & Crosshairs -->
+  <circle cx="256" cy="220" r="140" fill="none" stroke="#be123c" stroke-width="1.5" stroke-opacity="0.25" stroke-dasharray="6 4"/>
+  <circle cx="256" cy="220" r="100" fill="none" stroke="#94a3b8" stroke-width="1" stroke-opacity="0.2"/>
+  <circle cx="256" cy="220" r="60" fill="none" stroke="#94a3b8" stroke-width="1" stroke-opacity="0.15"/>
+  
+  <!-- Outer tick ticks -->
+  <path d="M 256 65 L 256 75 M 256 365 L 256 375 M 101 220 L 111 220 M 401 220 L 411 220" stroke="#94a3b8" stroke-width="2" stroke-opacity="0.4"/>
+  
+  <!-- The Shield Base (Red/Crimson Dual tone) -->
+  <g filter="drop-shadow(0px 10px 20px rgba(0,0,0,0.65))">
+    <!-- Outer Silver Border path -->
+    <path d="M 256 80 C 316 80, 366 100, 366 120 C 366 210, 316 280, 256 320 C 196 280, 146 210, 146 120 C 146 100, 196 80, 256 80 Z" 
+          fill="none" stroke="url(#silverGrad)" stroke-width="6" stroke-linejoin="round"/>
+    
+    <!-- Outer Silver Bevel line inner -->
+    <path d="M 256 83 C 312 83, 359 101, 359 120 C 359 205, 312 272, 256 312 C 200 272, 153 205, 153 120 C 153 101, 200 83, 256 83 Z" 
+          fill="url(#shieldGrad)" stroke="#4c0519" stroke-width="1.5" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Inner Shield Detailing Line -->
+  <path d="M 256 95 C 298 95, 335 110, 335 125 C 335 190, 298 245, 256 280 C 214 245, 177 190, 177 125 C 177 110, 214 95, 256 95 Z" 
+        fill="none" stroke="#f43f5e" stroke-width="2" stroke-opacity="0.3" stroke-dasharray="4 2"/>
+
+  <!-- Compass Dial Marks inside Shield -->
+  <circle cx="256" cy="220" r="72" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-opacity="0.25"/>
+
+  <!-- Compass Needle (Northeast pointing, angle -45) -->
+  <g transform="translate(256, 220) rotate(-45)" filter="drop-shadow(0px 4px 10px rgba(0,0,0,0.5))">
+    <!-- Southwest half (Silver) -->
+    <path d="M 0 0 L -12 7 L 0 90 L 12 7 Z" fill="url(#silverGrad)"/>
+    <path d="M 0 0 L 0 90 L 12 7 Z" fill="#475569" opacity="0.4"/>
+
+    <!-- Northeast half (Vibrant Crimson Red) -->
+    <path d="M 0 0 L -12 -7 L 0 -115 L 12 -7 Z" fill="url(#needleRed)"/>
+    <!-- Shadow Split -->
+    <path d="M 0 0 L 0 -115 L 12 -7 Z" fill="#7f1d1d" opacity="0.3"/>
+  </g>
+
+  <!-- Center Pin Seat / Map Pin at top of needle (Pivot at 256, 120 area) -->
+  <g transform="translate(256, 120)" filter="drop-shadow(0px 4px 8px rgba(0,0,0,0.5))">
+    <!-- Outer bubble path -->
+    <path d="M 0 -22 C 12 -22, 22 -12, 22 0 C 22 14, 0 32, 0 32 C 0 32, -22 14, -22 0 C -22 -12, -12 -22, 0 -22 Z" 
+          fill="url(#needleRed)" stroke="#ffffff" stroke-width="2"/>
+    <!-- Center white core pin -->
+    <circle cx="0" cy="-2" r="7" fill="#ffffff"/>
+    <circle cx="0" cy="-2" r="3.5" fill="url(#shieldGrad)"/>
+  </g>
+
+  <!-- Typography Below Screen Logo -->
+  <g transform="translate(256, 395)" text-anchor="middle">
+    <!-- LOST PHONE -->
+    <text font-family="'Inter', 'Space Grotesk', system-ui, sans-serif" font-weight="900" font-size="34" fill="#ffffff" letter-spacing="4">LOST PHONE</text>
+    <!-- RECOVERY -->
+    <text y="38" font-family="'Inter', 'Space Grotesk', system-ui, sans-serif" font-weight="900" font-size="34" fill="#ffffff" letter-spacing="4">RECOVERY</text>
+    <!-- ANTI-THEFT SHIELD -->
+    <text y="70" font-family="'Inter', 'Space Grotesk', system-ui, sans-serif" font-weight="700" font-size="14" fill="#94a3b8" letter-spacing="7" opacity="0.9">ANTI-THEFT SHIELD</text>
+  </g>
+</svg>

@@ -72,8 +72,8 @@ export default function App() {
   const [showAddDeviceModal, setShowAddDeviceModal] = useState<boolean>(false);
   const [addDeviceError, setAddDeviceError] = useState<string>("");
   const [showWalkthrough, setShowWalkthrough] = useState<boolean>(false);
-  const [lostPhoneNumInput, setLostPhoneNumInput] = useState<string>("+919876543210");
-  const [lostNameInput, setLostNameInput] = useState<string>("Aarav Sharma");
+  const [lostPhoneNumInput, setLostPhoneNumInput] = useState<string>("");
+  const [lostNameInput, setLostNameInput] = useState<string>("");
   const [proximityDistance, setProximityDistance] = useState<number>(2.4);
 
   // 2-second beautiful splash loader states
@@ -177,13 +177,7 @@ export default function App() {
     };
   }, [selectedPhoneNum]);
 
-  // Sync form inputs when active device changes
-  useEffect(() => {
-    if (activeDevice) {
-      setLostPhoneNumInput(activeDevice.ownerPhone);
-      setLostNameInput(activeDevice.ownerName);
-    }
-  }, [selectedPhoneNum]);
+
 
   // Clean trigger command simulation
   const handleSimulateSmsCommand = (e: React.FormEvent) => {
@@ -297,6 +291,73 @@ export default function App() {
       setUninstallError("Access Denied: Incorrect passcode. Under MDM Policy, uninstall of 'Lost Phone Recovery' has been hardlocked.");
       addLog(selectedPhoneNum, 'alert', `Unauthorized uninstall attempt detected! Intruder entered incorrect passcode: "${uninstallPasscode}"`);
     }
+  };
+
+  // Immediate find-your-phone handler on Track, creating simulated target if new
+  const handleTrackLostPhone = () => {
+    const phone = lostPhoneNumInput.trim();
+    const name = lostNameInput.trim() || "Simulated Owner";
+
+    if (!phone) {
+      alert("Please enter a valid mobile number to track!");
+      return;
+    }
+
+    setDevices(prev => {
+      const updated = { ...prev };
+      
+      if (!updated[phone]) {
+        const isIos = phone.startsWith("+1") || Math.random() > 0.5;
+        const country = phone.startsWith("+91") ? "IN" : "US";
+        
+        // High-fidelity random offsets
+        const offsetDelhi = { lat: 28.6139 + (Math.random() - 0.5) * 0.05, lng: 77.2090 + (Math.random() - 0.5) * 0.05 };
+        const offsetSF = { lat: 37.7749 + (Math.random() - 0.5) * 0.05, lng: -122.4194 + (Math.random() - 0.5) * 0.05 };
+        const chosenLoc = country === "IN" ? offsetDelhi : offsetSF;
+
+        updated[phone] = {
+          appName: "Lost Phone Recovery App",
+          version: "v4.12.2 Pro",
+          deviceModel: isIos ? "Apple iPhone 15 Pro Max" : "Google Pixel 8 Pro",
+          osType: isIos ? 'iOS' : 'Android',
+          ownerName: name,
+          ownerPhone: phone,
+          country: country,
+          passcode: "1234",
+          isLocked: false,
+          isLosingPower: false,
+          isPoweredOff: false,
+          isSirenRunning: false,
+          batteryLevel: 89,
+          currentLat: chosenLoc.lat,
+          currentLng: chosenLoc.lng,
+          lastUpdated: "Just Now",
+          wifiConnected: true,
+          cellularConnected: true,
+          security: {
+            uninstallProtectionEnabled: true,
+            lockdownOnSimChange: true,
+            stealthMode: false
+          },
+          logs: [
+            { id: "tr-1", timestamp: new Date().toLocaleTimeString("en-US", { hour12: false }), type: "success", message: `Initiated high-precision dual GPS tracking request on target phone ${phone}.` },
+            { id: "tr-2", timestamp: new Date().toLocaleTimeString("en-US", { hour12: false }), type: "info", message: `Satellite triangulation signal resolved. GPS stable.` }
+          ]
+        };
+      } else {
+        // If it exists, update key info
+        updated[phone].ownerName = name || updated[phone].ownerName;
+        updated[phone].logs = [
+          { id: "tr-ping-" + Date.now(), timestamp: new Date().toLocaleTimeString("en-US", { hour12: false }), type: "success", message: `Active trace initiated. Pinging GPS constellation coordinate system on ${phone}...` },
+          ...updated[phone].logs
+        ].slice(0, 40);
+      }
+
+      localStorage.setItem("lost_phone_devices", JSON.stringify(updated));
+      return updated;
+    });
+
+    setSelectedPhoneNum(phone);
   };
 
   // Update lost phone profile real-time as details are filled or saved
@@ -455,36 +516,87 @@ export default function App() {
           <div className="absolute top-[10%] left-[20%] w-[300px] h-[300px] bg-rose-500/5 rounded-full blur-[100px] pointer-events-none" />
           <div className="absolute bottom-[10%] right-[20%] w-[300px] h-[300px] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-          <div className="relative max-w-md w-full flex flex-col items-center z-10">
+          <div className="relative max-w-sm w-full flex flex-col items-center z-10">
             
-            {/* Outer Radar Waves and Glowing Center Shield Logo */}
-            <div className="relative mb-6 w-32 h-32 flex items-center justify-center">
-              {/* Concentric rotating/pulsing radar rings */}
+            {/* Embedded High Fidelity Custom Vector Logo in compliance with user uploaded mockup */}
+            <div className="relative mb-6 w-56 h-56 flex items-center justify-center transform hover:scale-105 transition-transform duration-500">
+              {/* Concentric glowing radar sweeps */}
               <div className="absolute inset-0 rounded-full border border-rose-500/10 animate-ping" />
-              <div className="absolute inset-4 rounded-full border border-amber-500/20 animate-pulse" />
-              
-              {/* Outer spinning radar sweeps */}
-              <div className="absolute inset-0 rounded-full border-t border-r border-rose-500/30 animate-spin" style={{ animationDuration: '3s' }} />
-              <div className="absolute inset-2 rounded-full border-b border-l border-amber-500/30 animate-spin" style={{ animationDuration: '4s', animationDirection: 'reverse' }} />
+              <div className="absolute inset-6 rounded-full border border-rose-500/5 animate-pulse" />
+              <div className="absolute inset-2 rounded-full border-t-2 border-rose-500/20 animate-spin" style={{ animationDuration: '6s' }} />
 
-              {/* Secure Steel Shield & Pin vector center logo */}
-              <div className="relative bg-gradient-to-br from-rose-600 to-amber-500 p-6 rounded-3xl shadow-[0_0_50px_rgba(244,63,94,0.3)] border border-rose-400/30 transform hover:scale-105 transition-transform duration-300">
-                <svg className="w-12 h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  {/* Modern Shield Path */}
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="rgba(255,255,255,0.1)" />
-                  {/* High precision map pin in center */}
-                  <circle cx="12" cy="11" r="2" fill="currentColor" />
-                  <path d="M12 5c-2.76 0-5 2.24-5 5 0 3.75 5 8 5 8s5-4.25 5-8c0-2.76-2.24-5-5-5z" />
-                </svg>
-              </div>
+              <svg viewBox="0 0 512 512" className="w-full h-full drop-shadow-[0_15px_30px_rgba(0,0,0,0.85)]">
+                <defs>
+                  <radialGradient id="splashBgGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#be123c" stopOpacity="0.2"/>
+                    <stop offset="100%" stopColor="#0b1329" stopOpacity="0"/>
+                  </radialGradient>
+                  <linearGradient id="splashShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#e11d48"/>
+                    <stop offset="50%" stopColor="#be123c"/>
+                    <stop offset="100%" stopColor="#4c0519"/>
+                  </linearGradient>
+                  <linearGradient id="splashSilverGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#ffffff"/>
+                    <stop offset="50%" stopColor="#94a3b8"/>
+                    <stop offset="100%" stopColor="#475569"/>
+                  </linearGradient>
+                  <linearGradient id="splashNeedleRed" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#f43f5e"/>
+                    <stop offset="100%" stopColor="#9f1239"/>
+                  </linearGradient>
+                </defs>
+
+                <circle cx="256" cy="220" r="180" fill="url(#splashBgGlow)" />
+
+                {/* Radar grid coordinates */}
+                <circle cx="256" cy="220" r="140" fill="none" stroke="#be123c" strokeWidth="1.5" strokeOpacity="0.3" strokeDasharray="6 4"/>
+                <circle cx="256" cy="220" r="100" fill="none" stroke="#94a3b8" strokeWidth="1" strokeOpacity="0.2"/>
+                <circle cx="256" cy="220" r="60" fill="none" stroke="#94a3b8" strokeWidth="1" strokeOpacity="0.15"/>
+                <path d="M 256 50 L 256 390 M 86 220 L 426 220" stroke="#94a3b8" strokeWidth="1" strokeOpacity="0.1" />
+
+                {/* The Red Shield Base with Silver Border */}
+                <g>
+                  {/* Outer Silver Beveled Border */}
+                  <path d="M 256 80 C 316 80, 366 100, 366 120 C 366 210, 316 280, 256 320 C 196 280, 146 210, 146 120 C 146 100, 196 80, 256 80 Z" 
+                        fill="url(#splashShieldGrad)" stroke="url(#splashSilverGrad)" strokeWidth="5" strokeLinejoin="round"/>
+                  
+                  {/* Inner detailing curve */}
+                  <path d="M 256 95 C 298 95, 335 110, 335 125 C 335 190, 298 245, 256 280 C 214 245, 177 190, 177 125 C 177 110, 214 95, 256 95 Z" 
+                        fill="none" stroke="#f43f5e" strokeWidth="1.5" strokeOpacity="0.4" strokeDasharray="3 2"/>
+                </g>
+
+                {/* Compass Dial Marks */}
+                <circle cx="256" cy="220" r="72" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeOpacity="0.25"/>
+
+                {/* Rotating Compass Needle (Northeast Angle) */}
+                <g transform="translate(256, 220) rotate(-45)">
+                  {/* Southwest Point (Silver Bevel) */}
+                  <path d="M 0 0 L -12 7 L 0 90 L 12 7 Z" fill="url(#splashSilverGrad)"/>
+                  <path d="M 0 0 L 0 90 L 12 7 Z" fill="#334155" opacity="0.4"/>
+
+                  {/* Northeast Point (Red Bevel) */}
+                  <path d="M 0 0 L -12 -7 L 0 -115 L 12 -7 Z" fill="url(#splashNeedleRed)"/>
+                  <path d="M 0 0 L 0 -115 L 12 -7 Z" fill="#4c0519" opacity="0.45"/>
+                </g>
+
+                {/* High precision Map Pin Bubble pointing down on top pivot */}
+                <g transform="translate(256, 120)">
+                  <path d="M 0 -22 C 12 -22, 22 -12, 22 0 C 22 14, 0 32, 0 32 C 0 32, -22 14, -22 0 C -22 -12, -12 -22, 0 -22 Z" 
+                        fill="url(#splashNeedleRed)" stroke="#ffffff" strokeWidth="1.5"/>
+                  <circle cx="0" cy="-2" r="7" fill="#ffffff"/>
+                  <circle cx="0" cy="-2" r="3" fill="#be123c"/>
+                </g>
+              </svg>
             </div>
 
-            {/* Text Typography branding */}
-            <h1 className="text-2xl font-extrabold tracking-[0.25em] text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-rose-300 to-amber-300 uppercase font-sans mb-1">
-              LOST PHONE TRACKER
+            {/* Title from Custom Attached Mockup */}
+            <h1 className="text-2xl font-black tracking-[0.16em] text-white uppercase font-sans leading-none flex flex-col gap-1 select-none">
+              <span className="text-slate-100">LOST PHONE</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-rose-400 to-amber-450">RECOVERY</span>
             </h1>
-            <p className="text-[10px] tracking-widest text-slate-500 font-extrabold uppercase mb-8">
-              Anti-Theft Shield System
+            <p className="text-[10px] tracking-[0.45em] text-slate-500 font-extrabold uppercase mt-2.5 mb-8">
+              ANTI-THEFT SHIELD
             </p>
 
             {/* Progress Slider track & loaders */}
@@ -555,12 +667,7 @@ export default function App() {
             </button>
           )}
 
-          <button
-            onClick={() => setShowAddDeviceModal(true)}
-            className="flex items-center gap-1.5 py-1.5 px-3 rounded-lg text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white transition-all shadow-md active:scale-95"
-          >
-            <Plus className="w-4 h-4" /> Add Test Phone
-          </button>
+
           
           <button 
             onClick={setFullReset}
@@ -666,12 +773,8 @@ export default function App() {
                 <input
                   type="text"
                   value={lostPhoneNumInput}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setLostPhoneNumInput(val);
-                    handleUpdateLostPhoneDetails(val, lostNameInput);
-                  }}
-                  placeholder="e.g. +919876543210"
+                  onChange={(e) => setLostPhoneNumInput(e.target.value)}
+                  placeholder="e.g. +919876543210 (or +1...)"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white placeholder-slate-600 focus:ring-1 focus:ring-rose-500 focus:outline-none font-mono"
                 />
               </div>
@@ -683,15 +786,20 @@ export default function App() {
                 <input
                   type="text"
                   value={lostNameInput}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setLostNameInput(val);
-                    handleUpdateLostPhoneDetails(lostPhoneNumInput, val);
-                  }}
+                  onChange={(e) => setLostNameInput(e.target.value)}
                   placeholder="e.g. Aarav Sharma"
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white placeholder-slate-600 focus:ring-1 focus:ring-rose-500 focus:outline-none"
                 />
               </div>
+
+              {/* TRACK BUTTON TO IMMEDIATELY TRY TO FIND THE LOST DEVICE */}
+              <button
+                type="button"
+                onClick={handleTrackLostPhone}
+                className="w-full mt-1.5 py-2 px-4 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 hover:from-rose-500 hover:to-amber-400 shadow-lg shadow-rose-950/20 active:scale-[0.97] transition-all flex items-center justify-center gap-1.5 uppercase tracking-wide border border-rose-400/20"
+              >
+                <MapPin className="w-3.5 h-3.5 animate-bounce text-amber-250" /> Track Lost Phone
+              </button>
             </div>
 
             <div className="bg-slate-900/60 p-3 rounded-xl border border-slate-850/80 text-[11px] text-slate-400 leading-relaxed font-sans space-y-1">
