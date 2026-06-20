@@ -184,5 +184,33 @@ export const INITIAL_DEVICES: Record<string, DeviceState> = {
       { id: "201", timestamp: "09:02:10", type: "success", message: "Service successfully setup" },
       { id: "202", timestamp: "09:05:00", type: "warning", message: "Device offline (No internet/cellular). Initialized fallback SMS listening protocol." }
     ]
+  },
+  "+919999988888": {
+    appName: "Lost Phone Recovery DevApp",
+    version: "v4.12.2 Pro",
+    deviceModel: "Android Pixel 8 Pro",
+    osType: 'Android',
+    ownerName: "My Tracker Phone",
+    ownerPhone: "+919999988888",
+    country: 'IN',
+    passcode: "1234",
+    isLocked: false,
+    isLosingPower: false,
+    isPoweredOff: false,
+    isSirenRunning: false,
+    batteryLevel: 95,
+    currentLat: 28.6100,
+    currentLng: 77.2300,
+    lastUpdated: "Just Now",
+    wifiConnected: true,
+    cellularConnected: true,
+    security: {
+      uninstallProtectionEnabled: true,
+      lockdownOnSimChange: false,
+      stealthMode: false
+    },
+    logs: [
+      { id: "find-1", timestamp: "12:00:00", type: "success", message: "Tracker node established and registered automatically on install." }
+    ]
   }
 };
